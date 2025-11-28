@@ -1,7 +1,4 @@
 import { useState } from "react";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,191 +8,151 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+
 export default function CheckboxLabels() {
   const [levels, setLevels] = useState([]);
-  console.log("level: ", levels);
   const [components, setComponents] = useState([]);
-  console.log("component: ", components);
   const [hosts, setHosts] = useState([]);
-  console.log("host: ", hosts);
   const [requestId, setRequestId] = useState("");
-  console.log("requestId: ", requestId);
   const [startTime, setStartTime] = useState(null);
-  console.log("startTime: ", startTime);
   const [endTime, setEndTime] = useState(null);
-  console.log("endTime: ", endTime);
-  // const [page, setPage] = useState(0);
-  // const [pageSize, setPageSize] = useState(100);
-  // const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+
   const filter = {
-    levels: levels,
-    components: components,
-    hosts: hosts,
-    requestId: requestId,
+    levels,
+    components,
+    hosts,
+    requestId,
     startTime: startTime
       ? dayjs(startTime).format("YYYY-MM-DD HH:mm:ss")
       : null,
     endTime: endTime ? dayjs(endTime).format("YYYY-MM-DD HH:mm:ss") : null,
   };
-  console.log("filter: ", filter);
 
-  const dispatch = useDispatch();
-  const handleCheckbox = (value, list, setList) => {
-    setList(
-      list.includes(value) ? list.filter((v) => v !== value) : [...list, value]
-    );
+  const togglePill = (value, list, setList) => {
+    if (list.includes(value)) {
+      setList(list.filter((v) => v !== value));
+    } else {
+      setList([...list, value]);
+    }
   };
-  //   const fetchFilterPage = () => {
-  //     setLoading(true);
-  //     // console.log("Sending to API:", page, pageSize);
-  //     // const page = 0
-  //     // const pageSize = 100
-  //     axios
-  //       .post("http://localhost:8080/api/logs",
-  //         {
-  //           level: levels,
-  //           component: components,
-  //           host: hosts,
-  //           requestId:requestId,
-  //           timestamp: timeStamp
-  //         },{
-  //           params: {page,pageSize}
-  //         })
-  //       .then((res) => {
-  //         console.log("filter side response: ", res);
-  //         const data = res.data.entries.map((e, index) => ({
-  //           id: page * pageSize + index + 1,
-  //           timestamp: e.TimeStamp,
-  //           level: e.Level?.Level,
-  //           component: e.Component?.Component,
-  //           host: e.Host?.Host,
-  //           requestid: e.RequestId,
-  //           message: e.Message,
-  //         }));
-  //         console.log("filter side rows: ", data);
-  //         // setRows(data);
-  //         dispatch(setLogs(data));
-  //         dispatch(setTotal(res.data.count));
-  //         dispatch(setFilters({
-  //   levels,
-  //   components,
-  //   hosts,
-  //   requestId,
-  //   timeStamp
-  // }));
-  //         dispatch(setIsFiltered(true));
-  //       }).catch((err) => console.log(err))
-  //       .finally(() => setLoading(false));
-  //   };
+
+  // Uniform pill style for all boxes, auto width
+  const pillClasses = (selected) =>
+    `px-4 py-2 rounded-full border text-xs font-medium cursor-pointer transition
+    ${
+      selected
+        ? "bg-black text-white border-black"
+        : "bg-gray-100 text-gray-700 border-gray-300"
+    }
+    hover:bg-black hover:text-white`;
+
+  const toUpper = (text) => text.toUpperCase();
+
   return (
     <>
       <CssBaseline />
-      <Container maxWidth="md" className="mt-10">
-        <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-xl border">
-          <FormGroup className="space-y-5">
-            <div>
-              <label className="font-semibold">Level:</label>
-              <div className="flex gap-4 items-center mt-2">
-                {["INFO", "WARN", "ERROR", "DEBUG"].map((lvl) => (
-                  <FormControlLabel
-                    key={lvl}
-                    control={
-                      <Checkbox
-                        checked={levels.includes(lvl)}
-                        onChange={() => handleCheckbox(lvl, levels, setLevels)}
-                      />
-                    }
-                    label={lvl}
-                  />
-                ))}
-              </div>
-            </div>
-            <div>
-              <label className="font-semibold">Component:</label>
-              <div className="flex gap-4 items-center mt-2">
-                {["api-server", "database", "cache", "worker", "auth"].map(
-                  (cmp) => (
-                    <FormControlLabel
-                      key={cmp}
-                      control={
-                        <Checkbox
-                          checked={components.includes(cmp)}
-                          onChange={() =>
-                            handleCheckbox(cmp, components, setComponents)
-                          }
-                        />
-                      }
-                      label={cmp}
-                    />
-                  )
-                )}
-              </div>
-            </div>
-            <div>
-              <label className="font-semibold">Host:</label>
-              <div className="flex gap-4 items-center mt-2">
-                {["web01", "web02", "cache01", "worker01", "db01"].map(
-                  (hst) => (
-                    <FormControlLabel
-                      key={hst}
-                      control={
-                        <Checkbox
-                          checked={hosts.includes(hst)}
-                          onChange={() => handleCheckbox(hst, hosts, setHosts)}
-                        />
-                      }
-                      label={hst}
-                    />
-                  )
-                )}
-              </div>
-            </div>
-            <div>
-              <label className="font-semibold">Request ID:</label>
-              <TextField
-                fullWidth
-                label="Enter Request ID"
-                variant="outlined"
-                className="mt-1"
-                value={requestId}
-                onChange={(e) => setRequestId(e.target.value)}
-              />
-            </div>
-            {/* <div>
-              <label className="font-semibold">Timestamp:</label>
-              <TextField
-                fullWidth
-                label=">2025-11-17 10:00:00"
-                variant="outlined"
-                className="mt-1"
-                value={timeStamp}
-                onChange={(e) => setTimeStamp(e.target.value)}
-              />
-            </div> */}
-            {/* Date Range */}
+      <Container maxWidth="xl" className="mt-12 mb-12">
+        <div className="bg-white shadow-xl rounded-3xl p-12 border border-gray-200">
+          <h1 className="text-3xl font-bold text-center mb-12 text-slate-900 tracking-wide">
+            LOG FILTERS
+          </h1>
+
+          {/* TOP ROW - REQUEST ID & DATE PICKERS */}
+          <div className="grid grid-cols-3 gap-4 mb-8">
+            <TextField
+              label="Request ID"
+              value={requestId}
+              variant="outlined"
+              onChange={(e) => setRequestId(e.target.value)}
+            />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateTimePicker
                 label="Start Time"
                 value={startTime}
-                ampm={false}
                 onChange={(newValue) => setStartTime(newValue)}
               />
+            </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateTimePicker
                 label="End Time"
-                ampm={false}
                 value={endTime}
                 onChange={(newValue) => setEndTime(newValue)}
               />
             </LocalizationProvider>
-            <div className="flex justify-center">
-              <button
-                className="bg-black text-white px-5 py-2 rounded-md shadow"
-                onClick={() => dispatch(setFilters(filter))}
-              >
-                Search
-              </button>
+          </div>
+
+          {/* BOTTOM ROW - LEVEL, COMPONENT, HOST BOXES */}
+          <div className="grid grid-cols-3 gap-4">
+            {/* LEVEL BOX */}
+            <div className="p-4 border border-gray-300 rounded-xl bg-gray-50">
+              <h2 className="text-lg font-semibold mb-2 text-slate-800 text-center">
+                LEVEL
+              </h2>
+              <div className="flex gap-2 justify-center flex-wrap">
+                {["INFO", "WARN", "ERROR", "DEBUG"].map((lvl) => (
+                  <span
+                    key={lvl}
+                    className={pillClasses(levels.includes(lvl))}
+                    onClick={() => togglePill(lvl, levels, setLevels)}
+                  >
+                    {toUpper(lvl)}
+                  </span>
+                ))}
+              </div>
             </div>
-          </FormGroup>
+
+            {/* COMPONENT BOX */}
+            <div className="p-4 border border-gray-300 rounded-xl bg-gray-50">
+              <h2 className="text-lg font-semibold mb-2 text-slate-800 text-center">
+                COMPONENT
+              </h2>
+              <div className="flex gap-2 justify-center flex-wrap">
+                {["api-server", "database", "cache", "worker", "auth"].map(
+                  (cmp) => (
+                    <span
+                      key={cmp}
+                      className={pillClasses(components.includes(cmp))}
+                      onClick={() => togglePill(cmp, components, setComponents)}
+                    >
+                      {toUpper(cmp)}
+                    </span>
+                  )
+                )}
+              </div>
+            </div>
+
+            {/* HOST BOX */}
+            <div className="p-4 border border-gray-300 rounded-xl bg-gray-50">
+              <h2 className="text-lg font-semibold mb-2 text-slate-800 text-center">
+                HOST
+              </h2>
+              <div className="flex gap-2 justify-center flex-wrap">
+                {["web01", "web02", "cache01", "worker01", "db01"].map(
+                  (hst) => (
+                    <span
+                      key={hst}
+                      className={pillClasses(hosts.includes(hst))}
+                      onClick={() => togglePill(hst, hosts, setHosts)}
+                    >
+                      {toUpper(hst)}
+                    </span>
+                  )
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* APPLY BUTTON */}
+          <div className="flex justify-center mt-8">
+            <button
+              className="bg-black text-white px-12 py-4 rounded-2xl shadow-lg font-semibold text-lg hover:bg-gray-900 transition"
+              onClick={() => dispatch(setFilters(filter))}
+            >
+              Apply Filters
+            </button>
+          </div>
         </div>
       </Container>
     </>

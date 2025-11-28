@@ -72,13 +72,13 @@ export default function DataTable() {
         }}
         pageSizeOptions={[10, 20, 50, 100]}
         columns={[
-          { field: "id", headerName: "SL No.", width: 80 },
-          { field: "timestamp", headerName: "Timestamp", width: 180 },
-          { field: "level", headerName: "Level", width: 120 },
-          { field: "component", headerName: "Component", width: 150 },
-          { field: "host", headerName: "Host", width: 150 },
-          { field: "requestid", headerName: "Request ID", width: 150 },
-          { field: "message", headerName: "Message", width: 300 },
+          { field: "id", headerName: "SL NO.", width: 80 },
+          { field: "timestamp", headerName: "TIMESTAMP", width: 180 },
+          { field: "level", headerName: "LEVEL", width: 120 },
+          { field: "component", headerName: "COMPONENT", width: 150 },
+          { field: "host", headerName: "HOST", width: 150 },
+          { field: "requestid", headerName: "REQUEST ID", width: 150 },
+          { field: "message", headerName: "MESSAGE", width: 300 },
         ]}
       />
     </div>
