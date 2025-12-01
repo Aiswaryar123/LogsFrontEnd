@@ -7,6 +7,7 @@ import { setFilters } from "./LogSlice";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import dayjs from "dayjs";
 
 export default function CheckboxLabels() {
@@ -38,123 +39,150 @@ export default function CheckboxLabels() {
     }
   };
 
-  // Uniform pill style for all boxes, auto width
+  // ⭐ PROFESSIONAL COLOR PILLS
   const pillClasses = (selected) =>
     `px-4 py-2 rounded-full border text-xs font-medium cursor-pointer transition
     ${
       selected
-        ? "bg-black text-white border-black"
-        : "bg-gray-100 text-gray-700 border-gray-300"
-    }
-    hover:bg-black hover:text-white`;
+        ? "bg-indigo-600 text-white border-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]"
+        : "bg-[#262626] text-gray-300 border-[#333] hover:bg-[#333]"
+    }`;
 
   const toUpper = (text) => text.toUpperCase();
 
+  // ⭐ DARK MODE THEME FOR MUI COMPONENTS
+  const darkTheme = createTheme({
+    palette: {
+      mode: "dark",
+      background: {
+        default: "#0f0f0f",
+        paper: "#1a1a1a",
+      },
+    },
+  });
+
   return (
-    <>
+    <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <Container maxWidth="xl" className="mt-12 mb-12">
-        <div className="bg-white shadow-xl rounded-3xl p-12 border border-gray-200">
-          <h1 className="text-3xl font-bold text-center mb-12 text-slate-900 tracking-wide">
-            LOG FILTERS
-          </h1>
 
-          {/* TOP ROW - REQUEST ID & DATE PICKERS */}
-          <div className="grid grid-cols-3 gap-4 mb-8">
-            <TextField
-              label="Request ID"
-              value={requestId}
-              variant="outlined"
-              onChange={(e) => setRequestId(e.target.value)}
-            />
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateTimePicker
-                label="Start Time"
-                value={startTime}
-                onChange={(newValue) => setStartTime(newValue)}
+      <div className=" bg-[#0f0f0f] py-14">
+        <Container maxWidth="xl">
+          <div className="bg-[#121212] shadow-[0_0_20px_rgba(255,255,255,0.07)] rounded-3xl p-12 border border-gray-800">
+            {/* Heading */}
+            <h1 className="text-4xl font-extrabold text-center mb-12 text-white tracking-wide">
+              LOG SEARCH FILTERS
+            </h1>
+
+            {/* INPUTS */}
+            <div className="grid grid-cols-3 gap-6 mb-10">
+              <TextField
+                label="Request ID"
+                value={requestId}
+                variant="outlined"
+                fullWidth
+                onChange={(e) => setRequestId(e.target.value)}
               />
-            </LocalizationProvider>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateTimePicker
-                label="End Time"
-                value={endTime}
-                onChange={(newValue) => setEndTime(newValue)}
-              />
-            </LocalizationProvider>
-          </div>
 
-          {/* BOTTOM ROW - LEVEL, COMPONENT, HOST BOXES */}
-          <div className="grid grid-cols-3 gap-4">
-            {/* LEVEL BOX */}
-            <div className="p-4 border border-gray-300 rounded-xl bg-gray-50">
-              <h2 className="text-lg font-semibold mb-2 text-slate-800 text-center">
-                LEVEL
-              </h2>
-              <div className="flex gap-2 justify-center flex-wrap">
-                {["INFO", "WARN", "ERROR", "DEBUG"].map((lvl) => (
-                  <span
-                    key={lvl}
-                    className={pillClasses(levels.includes(lvl))}
-                    onClick={() => togglePill(lvl, levels, setLevels)}
-                  >
-                    {toUpper(lvl)}
-                  </span>
-                ))}
-              </div>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                  label="Start Time"
+                  value={startTime}
+                  onChange={(newValue) => setStartTime(newValue)}
+                  slotProps={{
+                    textField: { fullWidth: true },
+                  }}
+                />
+              </LocalizationProvider>
+
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                  label="End Time"
+                  value={endTime}
+                  onChange={(newValue) => setEndTime(newValue)}
+                  slotProps={{
+                    textField: { fullWidth: true },
+                  }}
+                />
+              </LocalizationProvider>
             </div>
 
-            {/* COMPONENT BOX */}
-            <div className="p-4 border border-gray-300 rounded-xl bg-gray-50">
-              <h2 className="text-lg font-semibold mb-2 text-slate-800 text-center">
-                COMPONENT
-              </h2>
-              <div className="flex gap-2 justify-center flex-wrap">
-                {["api-server", "database", "cache", "worker", "auth"].map(
-                  (cmp) => (
+            {/* FILTER GROUPS */}
+            <div className="grid grid-cols-3 gap-6">
+              {/* LEVEL */}
+              <div className="p-6 border border-gray-700 rounded-xl bg-[#1a1a1a] shadow-[0_0_10px_rgba(255,255,255,0.03)]">
+                <h2 className="text-lg font-semibold mb-4 text-gray-200 text-center">
+                  LEVEL
+                </h2>
+                <div className="flex gap-3 justify-center flex-wrap">
+                  {["INFO", "WARN", "ERROR", "DEBUG"].map((lvl) => (
                     <span
-                      key={cmp}
-                      className={pillClasses(components.includes(cmp))}
-                      onClick={() => togglePill(cmp, components, setComponents)}
+                      key={lvl}
+                      className={pillClasses(levels.includes(lvl))}
+                      onClick={() => togglePill(lvl, levels, setLevels)}
                     >
-                      {toUpper(cmp)}
+                      {toUpper(lvl)}
                     </span>
-                  )
-                )}
+                  ))}
+                </div>
+              </div>
+
+              {/* COMPONENT */}
+              <div className="p-6 border border-gray-700 rounded-xl bg-[#1a1a1a] shadow-[0_0_10px_rgba(255,255,255,0.03)]">
+                <h2 className="text-lg font-semibold mb-4 text-gray-200 text-center">
+                  COMPONENT
+                </h2>
+                <div className="flex gap-3 justify-center flex-wrap">
+                  {["api-server", "database", "cache", "worker", "auth"].map(
+                    (cmp) => (
+                      <span
+                        key={cmp}
+                        className={pillClasses(components.includes(cmp))}
+                        onClick={() =>
+                          togglePill(cmp, components, setComponents)
+                        }
+                      >
+                        {toUpper(cmp)}
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
+
+              {/* HOST */}
+              <div className="p-6 border border-gray-700 rounded-xl bg-[#1a1a1a] shadow-[0_0_10px_rgba(255,255,255,0.03)]">
+                <h2 className="text-lg font-semibold mb-4 text-gray-200 text-center">
+                  HOST
+                </h2>
+                <div className="flex gap-3 justify-center flex-wrap">
+                  {["web01", "web02", "cache01", "worker01", "db01"].map(
+                    (hst) => (
+                      <span
+                        key={hst}
+                        className={pillClasses(hosts.includes(hst))}
+                        onClick={() => togglePill(hst, hosts, setHosts)}
+                      >
+                        {toUpper(hst)}
+                      </span>
+                    )
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* HOST BOX */}
-            <div className="p-4 border border-gray-300 rounded-xl bg-gray-50">
-              <h2 className="text-lg font-semibold mb-2 text-slate-800 text-center">
-                HOST
-              </h2>
-              <div className="flex gap-2 justify-center flex-wrap">
-                {["web01", "web02", "cache01", "worker01", "db01"].map(
-                  (hst) => (
-                    <span
-                      key={hst}
-                      className={pillClasses(hosts.includes(hst))}
-                      onClick={() => togglePill(hst, hosts, setHosts)}
-                    >
-                      {toUpper(hst)}
-                    </span>
-                  )
-                )}
-              </div>
+            {/* BUTTON */}
+            <div className="flex justify-center mt-10">
+              <button
+                className="bg-indigo-600 text-white px-14 py-4 rounded-2xl 
+                  shadow-[0_0_20px_rgba(255,255,255,0.07)] 
+                  font-semibold text-xl hover:bg-indigo-500 transition"
+                onClick={() => dispatch(setFilters(filter))}
+              >
+                APPLY FILTERS
+              </button>
             </div>
           </div>
-
-          {/* APPLY BUTTON */}
-          <div className="flex justify-center mt-8">
-            <button
-              className="bg-black text-white px-12 py-4 rounded-2xl shadow-lg font-semibold text-lg hover:bg-gray-900 transition"
-              onClick={() => dispatch(setFilters(filter))}
-            >
-              Apply Filters
-            </button>
-          </div>
-        </div>
-      </Container>
-    </>
+        </Container>
+      </div>
+    </ThemeProvider>
   );
 }
