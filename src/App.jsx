@@ -35,7 +35,7 @@ import { useState } from "react";
 import "./App.css";
 // import BasicTable from "./table";
 // import CheckboxLabels from "./Filter";
-import { BrowserRouter, Routes, Route } from "react-router-dom"; // Add this line
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LogAnalyserUi from "./component/LogAnalyserUi";
 import Form from "./Form";
 

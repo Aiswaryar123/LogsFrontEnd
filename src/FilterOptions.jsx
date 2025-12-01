@@ -39,7 +39,6 @@ export default function CheckboxLabels() {
     }
   };
 
-  // ⭐ PROFESSIONAL COLOR PILLS
   const pillClasses = (selected) =>
     `px-4 py-2 rounded-full border text-xs font-medium cursor-pointer transition
     ${
@@ -50,7 +49,6 @@ export default function CheckboxLabels() {
 
   const toUpper = (text) => text.toUpperCase();
 
-  // ⭐ DARK MODE THEME FOR MUI COMPONENTS
   const darkTheme = createTheme({
     palette: {
       mode: "dark",
